@@ -1,16 +1,27 @@
 import express, {Request, Response} from "express";
 import User from "../models/user";
 import jwt from "jsonwebtoken";
+import {check} from "express-validator";
+import { query, Result, validationResult } from 'express-validator';
+
 
 const router = express.Router();
-router.post(" /register", async (req:Request, res: Response) => {
+
+// second argument is an endpoint handler
+router.post("/register", [check("firstName", "First Name is required").isString(),
+check("lastName", "Last Name  is required").isString(),
+check("email","Email is required").isEmail(),
+check("password", "Password with 6 or more characters required").isLength({min:6,}),
+], async (req:Request, res: Response) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({message:errors.array()})
+    }
 try {
 //check if email that user input exists
 let user = await User.findOne({
-    email:req.body.email
-}); //checks the user documents/directory, then tries to find one document(s) 
-// that matches the email we recieved in request body
-
+    email:req.body.email,
+}); //checks the user documents/directory, then tries to find one document(s)that matches the email we recieved in request body
 
 // if user already has an account, return 400 error code saying it exists
 if(user){
@@ -22,7 +33,7 @@ await user.save();
 
 //have to define paramtypes we want inside our json web token
 // ******** Store the info as an environment variable secret key for security.
-const token = jwt.sign({userId: user.id}, process.env.JWT_SECRET_KEY as string, {expiresIn: "1d"});
+const token = jwt.sign({userId: user.id}, process.env.JWT_SECRET_KEY as string, {expiresIn: "1d",});
 //have to define the jwt separately ourselves. 
 
 res.cookie("auth_token", token, {
@@ -30,13 +41,9 @@ res.cookie("auth_token", token, {
     secure: process.env.NODE_ENV === "production",
     maxAge: 8640000
 });
-// the secure argument makes sure that the cookie has to be https
-// when doing local devs, not always good to secure because have to setup https
-// So, make sure cookies are secure if we are in a production environment
-//maxAge of the cookie has to be the same age as the JWT lifespan, but in seconds 
+// the secure argument makes sure that the cookie has to be https when doing local devs, not always good to secure because have to setup https
+// So, make sure cookies are secure if we are in a production environment maxAge of the cookie has to be the same age as the JWT lifespan, but in milliseconds 
 return res.sendStatus(200);
-
-
 }
 
 catch(error){
@@ -45,5 +52,6 @@ catch(error){
     //Dont send specific error message b/c it could give specific information for hackers
 }
 
+});
 
-})
+export default router;
