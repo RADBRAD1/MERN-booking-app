@@ -1,5 +1,6 @@
 import {Link} from "react-router-dom";
 import { useAppContext } from "../contexts/AppContext";
+import SignOutButton from "./SignOutButton";
 
 //react-router-dom has bindings for using react router on the web
 
@@ -24,9 +25,7 @@ const Header = () => {
                 <> 
                 <Link to = "/my-bookings">My Bookings </Link>
                 <Link to = "/my-hotels">My Hotels </Link>
-                <button>
-                    Sign out
-                </button>
+                <SignOutButton /> 
                 </>) :  (<Link to = "/sign-in" className = "flex bg-white items-center text-blue-600 px-3 font-bold hover:bg-gray-100 hover:text-black-500">
                 Sign In
             </Link> )
@@ -40,3 +39,4 @@ const Header = () => {
 };
 
 export default Header; // specific value/object that is primary module export. 
+

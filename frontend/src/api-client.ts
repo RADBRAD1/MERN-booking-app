@@ -48,9 +48,6 @@ return body;
 
 }
 
-
-
-
 export const validateToken = async ()=> {
     const response = await fetch(`${API_BASE_URL}/api/auth/validate-token`, {  
         credentials: "include" //tells browser to send any cookies with the request given to the endpoint. 
@@ -63,6 +60,20 @@ export const validateToken = async ()=> {
 
     return response.json();
 
-}
+};
+
+//endpoint for logging out, access the backend signout function from the auth.ts in routes folder from backend. 
+export const signOut = async ()=> {
+    const response = await fetch(`${API_BASE_URL}/api/auth/logout`, {credentials : "include", method: "POST", })
+    if(!response.ok)
+    {
+        throw new Error("Error during signout");
+    }
+
+
+
+};
+
+
 
 

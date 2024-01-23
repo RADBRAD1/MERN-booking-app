@@ -1,6 +1,8 @@
 import { useForm } from "react-hook-form";
 import * as apiClient from '../api-client';
 import { useMutation } from "react-query";
+import { useAppContext } from "../contexts/AppContext";
+import { useNavigate } from "react-router-dom";
 
 export type SignInFormData = {
     email:string; password: string;
@@ -8,6 +10,9 @@ export type SignInFormData = {
 
 // the sign in page has the same email and password code as the register.tsx page, but only used the code in 2 places so no need to create a separate file
 const SignIn = () => {
+   
+    const { showToast} = useAppContext();
+    const navigate = useNavigate(); //useNavigate hook,
     const {register, formState : {errors}, handleSubmit} = useForm<SignInFormData> ();
 
     //connect signIn function in apiclient to the useMutation hook. 
@@ -16,9 +21,12 @@ const SignIn = () => {
             console.log("user has been signed in"); //helps with debugging, log msg. 
             //1. show the toast
             //2. then navigate to the home page 
+            showToast({message : "Sign in Successful", type: "SUCCESS"});
+            navigate("/") //sends the user back to the home/default page. 
         }, onError: (error: Error)=> {  
             //when we have an error, react query will give us the error that we pass into this arrow function
             //we show the toast with error
+            showToast( {message: error.message, type:"ERROR"});
 
         }
 
