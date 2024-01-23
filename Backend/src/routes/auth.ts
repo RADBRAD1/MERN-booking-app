@@ -5,7 +5,7 @@ import { query, Result, validationResult } from 'express-validator';
 import User from "../models/user";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
+import verifyToken from "../middleware/auth";
 
 const router = express.Router();
 
@@ -55,5 +55,14 @@ router.post("/login", [
     }
 
 });
+
+
+// this endpoint, whenever we make a get request, it will run the middleware "verifyToken"(which checks the http cookie sent to us by the frontend
+// to see if the cookie passes the test). if it passes the test, the middleware sends info to the arrow ufnction and sends 200 status as well as the userId
+//which was passed to us in the request. 
+router.get("/validate-token", verifyToken, (req: Request, res: Response) => {
+res.status(200).send({userId: req.userId})
+}) 
+
 
 export default router;

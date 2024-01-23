@@ -18,7 +18,6 @@ const userSchema = new mongoose.Schema(
         password: {type: String, required: true},
         firstName:{type: String, required: true},
         lastName: {type: String, required: true},
-
     }
 );// need to pass an object into schema, so we can import db data
 

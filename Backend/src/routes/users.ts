@@ -43,7 +43,7 @@ res.cookie("auth_token", token, {
 });
 // the secure argument makes sure that the cookie has to be https when doing local devs, not always good to secure because have to setup https
 // So, make sure cookies are secure if we are in a production environment maxAge of the cookie has to be the same age as the JWT lifespan, but in milliseconds 
-return res.sendStatus(200);
+return res.sendStatus(200).send({message :"User registered OK"});
 }
 
 catch(error){

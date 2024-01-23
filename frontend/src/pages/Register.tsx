@@ -1,8 +1,13 @@
 
 
 import {useForm} from "react-hook-form";
+import { useMutation, useQueryClient} from "react-query";
+import * as apiClient from "../api-client";
+import { useAppContext } from "../contexts/AppContext";
+import { useNavigate } from "react-router-dom";
 
-type RegisterFormData = {
+// make sure to EXPORT TYPE, not just to decalre the type 
+export type RegisterFormData = {
     firstName: string;
     lastName: string;
     email: string;
@@ -12,10 +17,35 @@ type RegisterFormData = {
 
 const Register = ()=>
 { 
+    const queryClient = useQueryClient();
+
+    const navigate = useNavigate();
+    
+    const {showToast} = useAppContext();
+    
     const{register, watch, handleSubmit, formState : {errors}, } = useForm<RegisterFormData>();
-    const onSubmit = handleSubmit((data)=> {console.log(data);});
+
+    
+    //get access to many fetch requests at the same time. 
+    const mutation = useMutation(apiClient.register,{onSuccess : async () => {
+        showToast({message: " Registration Success!", type: "SUCCESS"});
+        await queryClient.invalidateQueries("validateToken");
+        navigate("/");
+    }, onError : (error: Error) => {
+        showToast({message: error.message, type: "ERROR"});
+    },
+}); 
+    //user react query so dont have to manage ourselves
+
+
+    //handle the log data only if registration is successful 
+    const onSubmit = handleSubmit((data)=> {
+        mutation.mutate(data);
+    });
+
+
     return(
-        <form className = "flex flex-col gap-5" onSubmit = {onSubmit}>
+        <form method = "POST" action = "/api/users/register" className = "flex flex-col gap-5" onSubmit = {onSubmit}>
             <h2 className = "text-3x1 font-bold"> 
                 Create an Account
             </h2>
@@ -68,7 +98,7 @@ const Register = ()=>
              <label className = "text-gray-700 text-sm font-bold flex-1">
                    Confirm Password
                     <input type = "password" className = "border rounded w-full py-1 px-2 font-normal" {...register("confirmPassword", { validate: (val)=> {
-                        if(!val){ return "this field is required";}
+                        if(!val){ return "This field is required";}
                         else if(watch("password") !== val )
                         { return "Your passwords do not match"; }
                     }}) }>

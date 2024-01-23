@@ -8,6 +8,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import Layout from './layouts/Layout'
 import { BrowserRouter as Router } from 'react-router-dom';
 import Register from './pages/Register.tsx'
+import SignIn from './pages/SignIn.tsx'
 
 /*function App() {
   const [count, setCount] = useState(0)
@@ -49,7 +50,7 @@ const App = () => {
         <Route path ="/search" element = {
           <Layout>   <p>Search Page</p>    </Layout>} />
         <Route path = "/register" element = {<Layout> <Register/> </Layout>} /> 
-
+        <Route path = "/sign-in" element = { <Layout> <SignIn/></Layout>}/>
         <Route path ="*" element = {<Navigate to ="/" />} />
       </Routes>
     </Router>

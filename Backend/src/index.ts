@@ -5,14 +5,20 @@ import mongoose from 'mongoose'; //allows database creation and connection using
 import { lstat } from "fs";
 import userRoutes from './routes/users';
 import authRoutes from "./routes/auth";
+import cookieParser from "cookie-parser";
 
 mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string)// define as string b/c pulling from .env the type is undefined
 //mongoose.connect establishes initial db connection. good to have it near the top because w/o db connec. no code runs
 
 const app = express(); // creates an express app
+app.use(cookieParser());
 app.use(express.json());//converts body of api requests into json
 app.use(express.urlencoded({extended: true})); //parse url with parameter, property extended = true
-app.use(cors());//cors is a security measure, prevents certain url requests if not agree (ui request is diff port to backend)
+app.use(cors({ 
+    origin:process.env.FRONTEND_URL, 
+    credentials:true,
+
+}));//cors is a security measure, prevents certain url requests if not agree (ui request is diff port to backend)
 
 
 app.use("/api/auth",authRoutes);
