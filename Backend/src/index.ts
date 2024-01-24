@@ -7,7 +7,10 @@ import userRoutes from './routes/users';
 import authRoutes from "./routes/auth";
 import cookieParser from "cookie-parser";
 
-mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string)// define as string b/c pulling from .env the type is undefined
+mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string)
+.then(() => console.log("Connected to Database", process.env.MONGODB_CONNECTION_STRING));
+
+// define as string b/c pulling from .env the type is undefined
 //mongoose.connect establishes initial db connection. good to have it near the top because w/o db connec. no code runs
 
 const app = express(); // creates an express app
