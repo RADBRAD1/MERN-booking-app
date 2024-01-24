@@ -29,7 +29,8 @@ const Register = ()=>
     //get access to many fetch requests at the same time. 
     const mutation = useMutation(apiClient.register,{onSuccess : async () => {
         showToast({message: " Registration Success!", type: "SUCCESS"});
-        await queryClient.invalidateQueries("validateToken");
+        await queryClient.invalidateQueries("validateToken"); //invalidates query before we go to the home page
+        //await keyword also makes it so that in order for navigate to happen, the query invalidation line has to execute before. 
         navigate("/");
     }, onError : (error: Error) => {
         showToast({message: error.message, type: "ERROR"});

@@ -1,20 +1,23 @@
 //created a signout button section instead of just under a generic <button> tag is because it allows us to encapsulate signout logic in one place
 // has api call to logout and markup for button itself.
 
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import * as apiClient from "../api-client";
 import { useAppContext } from "../contexts/AppContext";
 
 
 const SignOutButton = ()=> {
+    const queryClient = useQueryClient(); //react query hook, allows you to do more things at a global level. 
     const {showToast} = useAppContext(); 
 
 
     const mutation = useMutation(apiClient.signOut , {
-        onSuccess: ()=> {   
+        onSuccess: async ()=> {   
             //show toast
+            await queryClient.invalidateQueries("validateToken"); // takes in the query name "validatetoken" as defined in AppContext.tsx, 
+            //whenever we click on signout, calls api client which gives us the expire token, invalidates the query here. then in the appcontext.tsx file
+            //we defined if there {iserror}, we set retry:false so it stops requesting from the endpoint. 
             showToast({message: "Signed Out!", type: "SUCCESS"});
-
         }, onError : (error: Error)=> {
             //show Toast 
             showToast({message: error.message, type: "ERROR"});
