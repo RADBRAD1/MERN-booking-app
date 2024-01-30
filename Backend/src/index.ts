@@ -2,7 +2,7 @@ import express, {Request, Response} from "express";
 import cors from "cors";
 import "dotenv/config"; //allows reading of .env file, connection strings
 import mongoose from 'mongoose'; //allows database creation and connection using code
-import { lstat } from "fs";
+import { lstat } from "fs"; 
 import userRoutes from './routes/users';
 import authRoutes from "./routes/auth";
 import cookieParser from "cookie-parser";
@@ -12,14 +12,11 @@ import path from "path";
 import hotelRoutes from "./routes/hotels";
 import bookingRoutes from "./routes/my-bookings";*/
 
-mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string)
+require('dotenv').config();
 
-//have to copy the string into the mongodb database like follows correctly, can't do the previous importing of the connection string. 
-//const db = mongoose.connect('mongodb+srv://setokaiba123:yyIu2mGjqCE0FWKC@e2e-test-db-mern-hotelb.rjqsbfs.mongodb.net/?retryWrites=true&w=majority')
-
-
-// can add this after mongoose.connect, to debug what db connection is present
-//.then(() => console.log("Connected to Database", process.env.MONGODB_CONNECTION_STRING));
+//have to copy the string into the mongodb database like follows correctly, can't do the previous importing of the connection string.
+//mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string)
+const db = mongoose.connect('mongodb+srv://setokaiba123:yyIu2mGjqCE0FWKC@e2e-test-db-mern-hotelb.rjqsbfs.mongodb.net/?retryWrites=true&w=majority')
 
 // define as string b/c pulling from .env the type is undefined
 //mongoose.connect establishes initial db connection. good to have it near the top because w/o db connec. no code runs
@@ -33,6 +30,12 @@ app.use(cors({
     credentials:true,
 
 }));//cors is a security measure, prevents certain url requests if not agree (ui request is diff port to backend)
+
+
+app.use(express.static(path.join(__dirname, "../../frontend/dist")));
+
+
+
 
 
 app.use("/api/auth",authRoutes);

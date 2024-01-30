@@ -4,9 +4,10 @@
 import {RegisterFormData} from "./pages/Register";
 import { SignInFormData } from "./pages/SignIn";
 
-//const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+//const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 const API_BASE_URL = `http://localhost:7000`; //not 5173, because it just matters about the backend port number, not frontend. we hard coded the 
 //environment variable number here as opposed to accessing the API_BASE_URL which was `undefined` before. 
+
 
 // the async function takes in data from registerForm data, which is defined in type registerformdata in register.tsx
 export const register = async (formData:RegisterFormData) => {

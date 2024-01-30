@@ -16,7 +16,7 @@ test('should allow the user to sign in', async ({ page }) => {
 
 
   await page.locator("[name = email]").fill("1@1.com");
-  await page.locator("[name = password").fill("password");
+  await page.locator("[name = password").fill("password123");
 
   await page.getByRole("button", {name: "Login"}).click();
 
@@ -31,7 +31,36 @@ test('should allow the user to sign in', async ({ page }) => {
 
 });
 
+test("should allow user to register", async ({page})=> {
 
+  const testEmail = `test_register${Math.floor(Math.random()*90000)+ 10000}@test.com` //every time we run test, we should have a new unique user generated
+  await page.goto(UI_URL);
+  
+  await page.getByRole("link",{name: "Sign In"}).click();
+  await page.getByRole("link",{name: "Create an account here"}).click();
+  
+  //because this is an assertion, wrap the desired statement with an expect()
+  await expect(page.getByRole("heading",{name: "Create an Account"})).toBeVisible();
+
+  await page.locator("[name = firstName]").fill("test_firstName");
+  await page.locator("[name = lastName]").fill("test_lastName");
+  await page.locator("[name = email]").fill("test_register@test.com");
+  await page.locator("[name = password]").fill("password123");
+  await page.locator("[name = confirmPassword]").fill("password123");
+
+
+  await page.getByRole("button",{name: "Create Account"}).click();
+
+  await expect(page.getByText("Registration Success!")).toBeVisible();
+  await expect(page.getByRole("link",{name: "My Bookings"})).toBeVisible();
+  await expect(page.getByRole("link",{name: "My Hotels"})).toBeVisible();
+  await expect(page.getByRole("button",{name: "Sign Out"})).toBeVisible();
+
+
+
+}
+
+);
 
 /*
 default test from playwright, good framework to use for our hotel booking app
