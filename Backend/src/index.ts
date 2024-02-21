@@ -7,16 +7,24 @@ import userRoutes from './routes/users';
 import authRoutes from "./routes/auth";
 import cookieParser from "cookie-parser";
 import path from "path";
-
-/*import myHotelRoutes from "./routes/my-hotels";
+import { v2 as cloudinary } from "cloudinary";
+import myHotelRoutes from "./routes/my-hotels";
 import hotelRoutes from "./routes/hotels";
-import bookingRoutes from "./routes/my-bookings";*/
+import bookingRoutes from "./routes/my-bookings";
 
-require('dotenv').config();
+require('dotenv').config({path: "../.env"});
+
+//starts connection to cloudinary from our backend server
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
 
 //have to copy the string into the mongodb database like follows correctly, can't do the previous importing of the connection string.
-//mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string)
-const db = mongoose.connect('mongodb+srv://setokaiba123:yyIu2mGjqCE0FWKC@e2e-test-db-mern-hotelb.rjqsbfs.mongodb.net/?retryWrites=true&w=majority')
+mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string);
+
+//const db = mongoose.connect('mongodb+srv://setokaiba123:yyIu2mGjqCE0FWKC@e2e-test-db-mern-hotelb.rjqsbfs.mongodb.net/?retryWrites=true&w=majority')
 
 // define as string b/c pulling from .env the type is undefined
 //mongoose.connect establishes initial db connection. good to have it near the top because w/o db connec. no code runs
@@ -34,18 +42,12 @@ app.use(cors({
 
 app.use(express.static(path.join(__dirname, "../../frontend/dist")));
 
-
-
-
-
 app.use("/api/auth",authRoutes);
 app.use("/api/users", userRoutes); //API ENDPOINT: if requests have the prefix /api/users, 
 // this command passes it on to userRoutes
-
-
-//app.use("/api/my-hotels", myHotelRoutes);
-//app.use("/api/hotels", hotelRoutes);
-//app.use("/api/my-bookings", bookingRoutes);
+app.use("/api/my-hotels", myHotelRoutes);
+app.use("/api/hotels", hotelRoutes);
+app.use("/api/my-bookings", bookingRoutes);
 
 app.get("*", (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"));

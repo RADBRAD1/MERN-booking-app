@@ -23,7 +23,7 @@ declare global
 
 const verifyToken = (req:Request, res:Response, next: NextFunction) => {
     //first, get the auth token sent to us in the register request. 
-    const token = req.cookies["auth_token"   ]
+    const token = req.cookies["auth_token"];
     if(!token){
         return res.status(401).json({message: "unauthorized"});
     }

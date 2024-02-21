@@ -15,13 +15,14 @@ router.post("/login", [
 
 ], async (req:Request, res: Response) => 
 {
-    const errors = validationResult(req)
+    const errors = validationResult(req);
     if(!errors.isEmpty())
     {
-        return res.status(400).json({message: errors.array() })
+        return res.status(400).json({message: errors.array() });
     }
 
     const{email,password} = req.body; // object destructures the email and password properties form req.body
+
     try{
         const user = await User.findOne({email})
         if(!user){
@@ -62,7 +63,7 @@ router.post("/login", [
 //which was passed to us in the request. 
 router.get("/validate-token", verifyToken, (req: Request, res: Response) => {
 res.status(200).send({userId: req.userId})
-}) 
+});
 
 router.post("/logout", (req:Request, res:Response) => {
     res.cookie("auth_token", "", {expires: new Date(0),});//instead of passing in a normal cookie, pass in an empty string as an auth_token. 
