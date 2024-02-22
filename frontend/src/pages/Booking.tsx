@@ -13,8 +13,10 @@ const Booking = () => {
   const search = useSearchContext();
   const { hotelId } = useParams();
 
+  //initialize number of nights based on the check in and checkout dates in our useSearchContext context
   const [numberOfNights, setNumberOfNights] = useState<number>(0);
 
+  //useEffect Hook to calculate number of nights user is staying
   useEffect(() => {
     if (search.checkIn && search.checkOut) {
       const nights =
@@ -37,6 +39,7 @@ const Booking = () => {
     }
   );
 
+  //calls fetch request we already created, that stays in our apiclient.  
   const { data: hotel } = useQuery(
     "fetchHotelByID",
     () => apiClient.fetchHotelById(hotelId as string),
@@ -80,5 +83,7 @@ const Booking = () => {
     </div>
   );
 };
+
+//elements tag comes from stripe sdk. allows us to create a payment. 
 
 export default Booking;

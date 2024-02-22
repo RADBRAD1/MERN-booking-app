@@ -3,6 +3,9 @@ type Props = {
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   };
   
+  //store the starrating state, then pass it on to the user and the search page
+
+  //selectedStars contains all the # of stars the user selected so far
   const StarRatingFilter = ({ selectedStars, onChange }: Props) => {
     return (
       <div className="border-b border-slate-300 pb-5">

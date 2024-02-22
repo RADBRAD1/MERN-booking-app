@@ -4,17 +4,26 @@ import * as apiClient from "./../api-client";
 import { AiFillStar } from "react-icons/ai";
 import GuestInfoForm from "../forms/GuestInfoForm/GuestInfoForm";
 
-const Detail = () => {
-  const { hotelId } = useParams();
 
+//this file has details in specific hotels. 
+//backend should describe what type components on frontend should be, less
+//chance of error
+
+const Detail = () => {
+  const { hotelId } = useParams(); //useParams is hook from react router dom, makes it easier
+  // to get stuff out of our URL, in this case it is the hotelID
+
+  //if we dont have a hotelID from useParams hook call, we run this
+  //
   const { data: hotel } = useQuery(
     "fetchHotelById",
-    () => apiClient.fetchHotelById(hotelId || ""),
+    () => apiClient.fetchHotelById(hotelId as string|| ""),
     {
       enabled: !!hotelId,
     }
   );
 
+  //returns an empty fragment until the hotel object is done rendering
   if (!hotel) {
     return <></>;
   }

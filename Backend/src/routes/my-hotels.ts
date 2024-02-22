@@ -6,6 +6,7 @@ import multer from "multer"; // pckg that helps with image uploading. takes imag
 // and gives it to us as an object for handling. 
 import cloudinary from "cloudinary";
 import Hotel from "../models/hotel";
+
 import verifyToken from "../middleware/auth";
 import { body } from "express-validator";
 import { HotelType } from "../shared/types";
@@ -75,6 +76,7 @@ router.get("/", verifyToken, async (req: Request, res: Response) => {
   }
 });
 
+// ":id" tells us that everything after the / is an id.
 router.get("/:id", verifyToken, async (req: Request, res: Response) => {
   const id = req.params.id.toString();
   try {
@@ -88,6 +90,9 @@ router.get("/:id", verifyToken, async (req: Request, res: Response) => {
   }
 });
 
+//endpoint for updating hotels on the hotel page. 
+//verifytoken protects the endpoint
+
 router.put(
   "/:hotelId",
   verifyToken,
@@ -97,6 +102,7 @@ router.put(
       const updatedHotel: HotelType = req.body;
       updatedHotel.lastUpdated = new Date();
 
+      //finds hotel that satisfy _id and userID, then makes sure it has the newest hotel info
       const hotel = await Hotel.findOneAndUpdate(
         {
           _id: req.params.hotelId,
@@ -119,7 +125,7 @@ router.put(
       ];
 
       await hotel.save();
-      res.status(201).json(hotel);
+      res.status(201).json(hotel); //makes sure request completes and sent as json obj
     } catch (error) {
       res.status(500).json({ message: "Something went throw" });
     }

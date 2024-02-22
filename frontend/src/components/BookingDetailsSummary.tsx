@@ -1,5 +1,10 @@
 import { HotelType } from "../../../backend/src/shared/types";
 
+//good to do fetching at the page level, then passing all the different
+//props to different components where needed. makes it easier to create
+//presentational components. 
+
+
 type Props = {
   checkIn: Date;
   checkOut: Date;

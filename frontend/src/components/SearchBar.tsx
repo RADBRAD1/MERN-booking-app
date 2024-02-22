@@ -7,7 +7,13 @@ import { useNavigate } from "react-router-dom";
 
 const SearchBar = () => {
   const navigate = useNavigate();
+  //declares global state
   const search = useSearchContext();
+
+  //save the state in the useSearchContext as well as the useState calls below
+  // But, we want to save the local variables that user types into searchbar, 
+  //so dont have to process everything fully globally outside the searchbar context. 
+  //only saves the values below to the global state of SearchBar() after user clicks submit
 
   const [destination, setDestination] = useState<string>(search.destination);
   const [checkIn, setCheckIn] = useState<Date>(search.checkIn);

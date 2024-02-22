@@ -11,7 +11,9 @@ type ToastMessage = {
     type: "SUCCESS" | "ERROR";
 }
 
-//appContext type describes different thigns we are exposing to the users in the context. 
+//appContext type describes different thigns
+// we are exposing to the users in the context. 
+//need to expose stripePromise so frontend can use it. 
 type AppContext = {
     showToast: (toastMessage: ToastMessage) => void;
     isLoggedIn: boolean;
@@ -20,7 +22,11 @@ type AppContext = {
 
 const AppContext = React.createContext<AppContext | undefined>(undefined);
 
+//this stripe variable allows us to connect to stripe and do many other things.
+//this only runs when the app loads, not constantly. 
 const stripePromise = loadStripe(STRIPE_PUB_KEY);
+
+
 //can set a child type and define it inline without previous creation.
 
 //in the appcontext.provider value, we expose the showtoast function.

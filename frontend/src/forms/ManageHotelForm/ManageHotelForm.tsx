@@ -39,6 +39,8 @@ const ManageHotelForm = ({ onSave, isLoading, hotel }: Props) => {
 const formMethods = useForm<HotelFormData>();
 const { handleSubmit, reset } = formMethods;
 
+
+//allows us to populate form
 useEffect(() => {
     reset(hotel);
 }, [hotel, reset]);

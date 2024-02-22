@@ -37,12 +37,17 @@ const Search = () => {
   );
 
   const handleStarsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const starRating = event.target.value;
+    //# of stars the user has checked or unchecked.
+    const starRating = event.target.value; 
 
+    //function to update the #of stars in the state, taking prevstate as input
     setSelectedStars((prevStars) =>
+      //run conditional check that user has checked the star. 
+      //if yes, it runs the first condition
       event.target.checked
-        ? [...prevStars, starRating]
+        ? [...prevStars, starRating] //copy previous # of stars in the state(an array of strings) then add the new star to the end of the array
         : prevStars.filter((star) => star !== starRating)
+        //if they uncheck it, it takes the currrent number of stars in the state, and filters out the stars that were just selected
     );
   };
 

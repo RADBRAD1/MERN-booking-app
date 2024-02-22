@@ -48,6 +48,10 @@ app.use("/api/users", userRoutes); //API ENDPOINT: if requests have the prefix /
 app.use("/api/my-hotels", myHotelRoutes);
 app.use("/api/hotels", hotelRoutes);
 app.use("/api/my-bookings", bookingRoutes);
+//hotelRoutes is used for visitors to explore hotels on search page, 
+//the myhotel routes is for users to view hotels already saved
+
+
 
 app.get("*", (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"));

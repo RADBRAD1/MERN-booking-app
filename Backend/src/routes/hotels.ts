@@ -10,19 +10,26 @@ const stripe = new Stripe(process.env.STRIPE_API_KEY as string);
 
 const router = express.Router();
 
+//gets all the hotels and returns them to the user. Displays when accessing 
+//search page too. 
 router.get("/search", async (req: Request, res: Response) => {
   try {
     const query = constructSearchQuery(req.query);
 
     let sortOptions = {};
+
+    //checkk what sortoptions user selected and sort based on that
     switch (req.query.sortOption) {
       case "starRating":
+        //means sort starRating from high to low
         sortOptions = { starRating: -1 };
         break;
       case "pricePerNightAsc":
+        //sort price per night query results from low to high
         sortOptions = { pricePerNight: 1 };
         break;
       case "pricePerNightDesc":
+        //sort price per night query results from high to low
         sortOptions = { pricePerNight: -1 };
         break;
     }
@@ -33,11 +40,14 @@ router.get("/search", async (req: Request, res: Response) => {
     );
     const skip = (pageNumber - 1) * pageSize;
 
+    //our find function call. 1. finds hotels that match query 2. sorts based on sort options
+    // 3. pagination, page skipping after. 
     const hotels = await Hotel.find(query)
       .sort(sortOptions)
       .skip(skip)
       .limit(pageSize);
 
+    //pass pagination data from backend to frontend to check for correct functionality
     const total = await Hotel.countDocuments(query);
 
     const response: HotelSearchResponse = {
@@ -66,10 +76,12 @@ router.get("/", async (req: Request, res: Response) => {
   }
 });
 
+//any requests that go to /api/hotels/430920944 will get handled by this handler
 router.get(
   "/:id",
   [param("id").notEmpty().withMessage("Hotel ID is required")],
   async (req: Request, res: Response) => {
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -87,10 +99,16 @@ router.get(
   }
 );
 
+//endpoint for stripe payment intent. 
+//verifyToken makes sure it is a protected endpoint. 
 router.post(
   "/:hotelId/bookings/payment-intent",
   verifyToken,
   async (req: Request, res: Response) => {
+    //1. totalCost
+    //2. hotelID
+    //3. userID, these 3 are needed to create the payment intent. 
+
     const { numberOfNights } = req.body;
     const hotelId = req.params.hotelId;
 
@@ -101,6 +119,7 @@ router.post(
 
     const totalCost = hotel.pricePerNight * numberOfNights;
 
+    //metadata allows us so store anything against the payment intent
     const paymentIntent = await stripe.paymentIntents.create({
       amount: totalCost * 100,
       currency: "gbp",
@@ -124,6 +143,8 @@ router.post(
   }
 );
 
+
+//
 router.post(
   "/:hotelId/bookings",
   verifyToken,
@@ -131,6 +152,7 @@ router.post(
     try {
       const paymentIntentId = req.body.paymentIntentId;
 
+      //get the invoice for the booking
       const paymentIntent = await stripe.paymentIntents.retrieve(
         paymentIntentId as string
       );
@@ -139,6 +161,8 @@ router.post(
         return res.status(400).json({ message: "payment intent not found" });
       }
 
+      //since our api here is exposed, other people and users could request information
+      //make sure paymentIntent information of the invoice matches up with the logged in user and hotelID. 
       if (
         paymentIntent.metadata.hotelId !== req.params.hotelId ||
         paymentIntent.metadata.userId !== req.userId
@@ -152,11 +176,15 @@ router.post(
         });
       }
 
+      //takes all details from the request body and userID in the request.
       const newBooking: BookingType = {
         ...req.body,
         userId: req.userId,
       };
 
+      //goes and finds ONE hotel whoseID matches the req.params, then
+      //pushes the booking object we created in the const newBooking declaration
+      //into the bookings array of the Hotel. 
       const hotel = await Hotel.findOneAndUpdate(
         { _id: req.params.hotelId },
         {
@@ -199,6 +227,8 @@ const constructSearchQuery = (queryParams: any) => {
     };
   }
 
+  //finds all the facilities that the user selected, and recieve it as either a string or string array depending on
+  //the # of facilities. 
   if (queryParams.facilities) {
     constructedQuery.facilities = {
       $all: Array.isArray(queryParams.facilities)
@@ -207,6 +237,7 @@ const constructSearchQuery = (queryParams: any) => {
     };
   }
 
+  //check if we recieve one type or multiple types in the query
   if (queryParams.types) {
     constructedQuery.type = {
       $in: Array.isArray(queryParams.types)
@@ -223,6 +254,7 @@ const constructSearchQuery = (queryParams: any) => {
     constructedQuery.starRating = { $in: starRatings };
   }
 
+  //$lte means less than our equal to, a certain maxprice we set. 
   if (queryParams.maxPrice) {
     constructedQuery.pricePerNight = {
       $lte: parseInt(queryParams.maxPrice).toString(),

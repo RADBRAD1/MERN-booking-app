@@ -22,9 +22,11 @@ type SearchContextProviderProps = {
   children: React.ReactNode;
 };
 
+//create react search component and exposes props to any other components that need them.
 export const SearchContextProvider = ({
   children,
 }: SearchContextProviderProps) => {
+  //define the state variables for our search functionality
   const [destination, setDestination] = useState<string>(
     () => sessionStorage.getItem("destination") || ""
   );

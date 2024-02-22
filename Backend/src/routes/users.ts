@@ -1,11 +1,31 @@
 import express, {Request, Response} from "express";
 import User from "../models/user";
 import jwt from "jsonwebtoken";
-import {check} from "express-validator";
-import { query, Result, validationResult } from 'express-validator';
+import {check,  validationResult} from "express-validator";
+import verifyToken from "../middleware/auth";
 
 
 const router = express.Router();
+
+//endpoint that lets use fetch the current logged in user
+//makes it so that UI does not need to know ID of current loggedin user, its in the http cookie anyways
+// 
+router.get("/me", verifyToken, async (req: Request, res: Response) => {
+    const userId = req.userId;
+    //verifyToken parses the http cookie that is sent, gives it to the request which is how we get 
+    //userID 
+  
+    try {
+      const user = await User.findById(userId).select("-password");
+      if (!user) {
+        return res.status(400).json({ message: "User not found" });
+      }
+      res.json(user);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "something went wrong" });
+    }
+  });
 
 // second argument is an endpoint handler
 router.post("/register", [check("firstName", "First Name is required").isString(),
@@ -20,7 +40,7 @@ check("password", "Password with 6 or more characters required").isLength({min:6
 try {
 //check if email that user input exists
 let user = await User.findOne({
-    email:req.body.email,
+    email: req.body.email,
 }); //checks the user documents/directory, then tries to find one document(s)that matches the email we recieved in request body
 
 // if user already has an account, return 400 error code saying it exists

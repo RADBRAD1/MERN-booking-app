@@ -107,6 +107,9 @@ export const addMyHotel = async (hotelFormData: FormData)=>
     return response.json();
 };
 
+//first line, Promise<HotelType[]> after async specifies the return type of our data. 
+
+
 export const fetchMyHotels = async (): Promise<HotelType[]> => {
     const response = await fetch(`${API_BASE_URL}/api/my-hotels`, {
       credentials: "include",
@@ -176,10 +179,13 @@ export const fetchMyHotels = async (): Promise<HotelType[]> => {
     queryParams.append("maxPrice", searchParams.maxPrice || "");
     queryParams.append("sortOption", searchParams.sortOption || "");
   
+    //if there are any facilities selected by the user on the UI, 
+    //append them to the query under the "facailities" key
     searchParams.facilities?.forEach((facility) =>
       queryParams.append("facilities", facility)
     );
   
+
     searchParams.types?.forEach((type) => queryParams.append("types", type));
     searchParams.stars?.forEach((star) => queryParams.append("stars", star));
   
@@ -202,6 +208,7 @@ export const fetchMyHotels = async (): Promise<HotelType[]> => {
     return response.json();
   };
   
+  //goes to backend and fetches hotel from the database
   export const fetchHotelById = async (hotelId: string): Promise<HotelType> => {
     const response = await fetch(`${API_BASE_URL}/api/hotels/${hotelId}`);
     if (!response.ok) {
@@ -211,6 +218,8 @@ export const fetchMyHotels = async (): Promise<HotelType[]> => {
     return response.json();
   };
   
+
+  //need hotelID and numberofNights to calculate payment intent info
   export const createPaymentIntent = async (
     hotelId: string,
     numberOfNights: string
