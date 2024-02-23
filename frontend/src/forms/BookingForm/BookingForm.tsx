@@ -50,6 +50,9 @@ const BookingForm = ({ currentUser, paymentIntent }: Props) => {
     }
   );
 
+  //even though user just has to enter the payment information,
+  //making all the default values available through this it much easier
+  //to access necessary data such as firstname and hotelID. 
   const { handleSubmit, register } = useForm<BookingFormData>({
     defaultValues: {
       firstName: currentUser.firstName,
@@ -65,7 +68,11 @@ const BookingForm = ({ currentUser, paymentIntent }: Props) => {
     },
   });
 
+  //confirms the payment using payment intent. 
+  //stripe used in AppContext is diff from stripe here
+  //more stripe functionality here
   const onSubmit = async (formData: BookingFormData) => {
+    //very safe, makes sure stripe and elements are initialized before payment process
     if (!stripe || !elements) {
       return;
     }
@@ -76,7 +83,12 @@ const BookingForm = ({ currentUser, paymentIntent }: Props) => {
       },
     });
 
+
+    //pass ...formdata that comes from BookinFormData, and adds the paymentID
+    //to the rest of the formdata. make sure we have the most up to date
+    //payment ID. then we pass this on to the API. 
     if (result.paymentIntent?.status === "succeeded") {
+      //book the room
       bookRoom({ ...formData, paymentIntentId: result.paymentIntent.id });
     }
   };

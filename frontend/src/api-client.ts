@@ -243,6 +243,7 @@ export const fetchMyHotels = async (): Promise<HotelType[]> => {
     return response.json();
   };
   
+  //puts the booking into the database
   export const createRoomBooking = async (formData: BookingFormData) => {
     const response = await fetch(
       `${API_BASE_URL}/api/hotels/${formData.hotelId}/bookings`,
