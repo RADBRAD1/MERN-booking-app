@@ -28,7 +28,10 @@ cloudinary.config({
 
 
 const mg = require('mongoose');
-const dbRoute = 'mongodb+srv://setokaiba123:yyIu2mGjqCE0FWKC@e2e-test-db-mern-hotelb.rjqsbfs.mongodb.net/?retryWrites=true&w=majority'
+
+const dbRoute = 'mongodb+srv://yugimoto963:qotz4mdJl0YqvQX3@cluster0.7tky8mw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0?directConnection=true'
+//const dbRoute = 'mongodb+srv://setokaiba123:yyIu2mGjqCE0FWKC@e2e-test-db-mern-hotelb.rjqsbfs.mongodb.net/?retryWrites=true&w=majority'
+
 mongoose.connect(dbRoute);
 
 //  {   useNewUrlParser: true, useUnifiedTopology: true,}
