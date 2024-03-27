@@ -29,12 +29,12 @@ cloudinary.config({
 
 const mg = require('mongoose');
 const dbRoute = 'mongodb+srv://setokaiba123:yyIu2mGjqCE0FWKC@e2e-test-db-mern-hotelb.rjqsbfs.mongodb.net/?retryWrites=true&w=majority'
-mongoose.Promise = global.Promise;
-
 mongoose.connect(dbRoute);
 
-let db = mongoose.connection;
-db.once('open', () => console.log('connected to the database')); 
+//  {   useNewUrlParser: true, useUnifiedTopology: true,}
+
+//let db = mongoose.connection;
+//db.once('open', () => console.log('connected to the database')); 
 
 // define as string b/c pulling from .env the type is undefined
 //mongoose.connect establishes initial db connection. good to have it near the top because w/o db connec. no code runs
