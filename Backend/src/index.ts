@@ -24,21 +24,17 @@ cloudinary.config({
 
 //have to copy the string into the mongodb database like follows correctly, can't do the previous importing of the connection string.
 
-mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string);
+//mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string);
 
-/*
+
 const mg = require('mongoose');
 const dbRoute = 'mongodb+srv://setokaiba123:yyIu2mGjqCE0FWKC@e2e-test-db-mern-hotelb.rjqsbfs.mongodb.net/?retryWrites=true&w=majority'
 mongoose.Promise = global.Promise;
 
-mongoose.connect(dbRoute, 
-  {   useNewUrlParser: true,
-      useUnifiedTopology: true
-  });
+mongoose.connect(dbRoute);
 
 let db = mongoose.connection;
-db.once('open', () => console.log('connected to the database')); */
-
+db.once('open', () => console.log('connected to the database')); 
 
 // define as string b/c pulling from .env the type is undefined
 //mongoose.connect establishes initial db connection. good to have it near the top because w/o db connec. no code runs
